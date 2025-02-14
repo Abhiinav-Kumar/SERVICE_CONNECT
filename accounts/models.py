@@ -71,6 +71,8 @@ class OTP(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField()
     
+    def __str__(self):
+        return self.user.name
 
 
 class Profile(models.Model):
@@ -89,3 +91,15 @@ class Profile(models.Model):
     
     def __str__(self):
         return self.full_name
+    
+    
+class EmployeeRegistration(models.Model):
+    name         = models.CharField(max_length=100)
+    age          = models.PositiveIntegerField()
+    phone_number = models.CharField(max_length=15)  
+    created_at   = models.DateTimeField(auto_now_add=True)
+    role         = models.CharField(default="Employee", max_length=50) 
+    
+    
+    def __str__(self):
+        return self.name

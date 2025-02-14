@@ -166,13 +166,20 @@ class ProfileAV(APIView):
         return Response({"message":"Successfully Deleted"},status=status.HTTP_204_NO_CONTENT)
 
 
-# All profile list 
-class Profile_List(APIView):
+
+class LogoutViewAV(APIView):
     permission_classes = [IsAuthenticated]
-    def get(self,request):
-        users = Profile.objects.all()
-        serializer = ProfileViewSerializer(users,many=True)
-        return Response(serializer.data,status=status.HTTP_200_OK)
+    def post(self,request):
+        
+        try:
+            refresh_token = request.data["refresh"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response({"message": "Successfully logged out"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error":"Invalid token"},status=status.HTTP_400_BAD_REQUEST)
+        
+        
     
     
     

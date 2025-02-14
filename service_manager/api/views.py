@@ -3,18 +3,18 @@ from rest_framework import status
 from rest_framework.views import APIView
 from service_manager.api.serializers import ServiceRequestSerializer
 from service_manager.models import ServiceRequest
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
+from service_manager.permissions import IsCustomer
 
 class ServiceBookingAV(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsCustomer]
     
     def get(self,request):
     
         data = ServiceRequest.objects.filter(customer=request.user.id)
         print(request.user.id)
         if not data.exists():
-            return Response({"message": "No Booking"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"message": "No Booking available"}, status=status.HTTP_404_NOT_FOUND)
         
         serializer = ServiceRequestSerializer(data,many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)

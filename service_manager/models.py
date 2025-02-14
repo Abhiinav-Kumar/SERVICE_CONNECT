@@ -1,5 +1,6 @@
 from django.db import models
 from service_manager.validators import validate_file_size  
+from accounts.models import EmployeeRegistration,UserRegister
 
 class Service(models.Model):
     title       = models.CharField(max_length=50, db_index=True)
@@ -19,3 +20,28 @@ class Subservice(models.Model):
 
     def __str__(self):
         return self.title
+    
+class ServiceRegistry(models.Model):
+    employee       = models.ForeignKey(EmployeeRegistration, on_delete=models.CASCADE)
+    service_name  = models.ForeignKey(Service, on_delete=models.CASCADE)  
+    subservice_name  = models.ForeignKey(Subservice, on_delete=models.CASCADE,null=True, blank=True)  
+    min_price     = models.PositiveIntegerField()
+    max_price     = models.PositiveIntegerField()
+    description   = models.TextField()
+
+    def __str__(self):
+        return f"{self.employee.name} - {self.service_name.title} - {self.subservice_name.title}"
+
+
+class ServiceRequest(models.Model):
+    service_registry = models.ForeignKey(ServiceRegistry, on_delete=models.CASCADE)
+    customer = models.ForeignKey(UserRegister, on_delete=models.CASCADE)
+    employee = models.ForeignKey(EmployeeRegistration, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    start_time = models.DateTimeField() 
+    end_time = models.DateTimeField()   
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.title} - {self.customer}"

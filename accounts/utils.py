@@ -14,3 +14,10 @@ def otp_generator(email):
     expiry_time += timedelta(hours=5, minutes=30)
     formatted_expiry_time = expiry_time.strftime("%Y-%m-%d %I:%M %p IST")
     return otp, formatted_expiry_time
+
+def iscustomer(user_id):
+    try:
+        user = UserRegister.objects.get(id=user_id)  
+        return user.role == "customer" 
+    except UserRegister.DoesNotExist:
+        return False  

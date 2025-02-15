@@ -3,6 +3,6 @@ from service_manager.api.views import ServiceBookingAV
 
 
 urlpatterns = [
-    path('serviceBooking/',ServiceBookingAV.as_view(),name="serviceBooking"),
-    path('serviceBooking/<int:booking_id>/',ServiceBookingAV.as_view(),name="serviceBooking"),
+    path('servicebooking/',ServiceBookingAV.as_view(),name="serviceBooking"),
+    path('servicebooking/<int:booking_id>/',ServiceBookingAV.as_view(),name="serviceBooking"),
 ]

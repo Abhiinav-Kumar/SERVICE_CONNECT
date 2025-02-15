@@ -30,7 +30,7 @@ class ServiceRegistry(models.Model):
     description   = models.TextField()
 
     def __str__(self):
-        return f"{self.employee.name} - {self.service_name.title} - {self.subservice_name.title}"
+        return f" - {self.service_name.title} - {self.subservice_name.title}"
 
 
 class ServiceRequest(models.Model):

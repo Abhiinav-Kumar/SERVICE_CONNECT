@@ -5,6 +5,12 @@ from service_manager.api.serializers import ServiceRequestSerializer
 from service_manager.models import ServiceRequest
 from rest_framework.permissions import IsAuthenticated
 from service_manager.permissions import IsCustomer
+from rest_framework.pagination import PageNumberPagination
+
+
+class MyPagination(PageNumberPagination):
+    page_size = 3  
+    page_size_query_param = 'page_size'
 
 
 class ServiceBookingAV(APIView):
@@ -12,12 +18,15 @@ class ServiceBookingAV(APIView):
     
     def get(self,request):
         
-        data = ServiceRequest.objects.filter(customer=request.user.id)
+        data = ServiceRequest.objects.filter(customer=request.user.id).order_by('-created_at')
         if not data.exists():
             return Response({"message": "No Booking available"}, status=status.HTTP_404_NOT_FOUND)
         
-        serializer = ServiceRequestSerializer(data,many=True)
-        return Response(serializer.data,status=status.HTTP_200_OK)
+        paginator = MyPagination()
+        paginated_data = paginator.paginate_queryset(data,request)
+        
+        serializer = ServiceRequestSerializer(paginated_data,many=True)
+        return paginator.get_paginated_response(serializer.data)
     
     def post(self,request):
         

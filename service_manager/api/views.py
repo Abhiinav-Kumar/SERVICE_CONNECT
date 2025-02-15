@@ -1,16 +1,40 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from service_manager.api.serializers import ServiceRequestSerializer
+from service_manager.api.serializers import ServiceRequestSerializer,ServiceSerializer,SubserviceSerializer
 from service_manager.models import ServiceRequest
 from rest_framework.permissions import IsAuthenticated
 from service_manager.permissions import IsCustomer
 from rest_framework.pagination import PageNumberPagination
+from service_manager.models import Service
+from rest_framework.filters import SearchFilter
+from django.db.models import Q
 
 
 class MyPagination(PageNumberPagination):
     page_size = 3  
     page_size_query_param = 'page_size'
+    
+
+class AllServiceAV(APIView):
+    
+    def get(self, request):
+        
+        query = request.GET.get('search', None)
+        print(query)
+        services = Service.objects.all()
+        
+        if query:
+            services = services.filter(
+                Q(title__icontains=query) | 
+                Q(subservices__title__icontains=query) 
+            ).distinct()
+        if not services.exists():
+            return Response({"message": f"Sorry, no results found for '{query}'. Please try a different search term."}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = ServiceSerializer(services, many=True)
+        
+        return Response({"services": serializer.data})
 
 
 class ServiceBookingAV(APIView):

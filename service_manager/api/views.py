@@ -21,7 +21,7 @@ class AllServiceAV(APIView):
     def get(self, request):
         
         query = request.GET.get('search', None)
-        print(query)
+        
         services = Service.objects.all()
         
         if query:

@@ -49,7 +49,7 @@ class ServiceRequest(models.Model):
 
 class Review(models.Model):
     user = models.ForeignKey(UserRegister, on_delete=models.CASCADE)  
-    service = models.ForeignKey(Subservice, on_delete=models.CASCADE)  
+    service = models.ForeignKey(Subservice, on_delete=models.CASCADE,related_name='review_set')  
     service_provider = models.ForeignKey(EmployeeRegistration,on_delete=models.CASCADE)
     rating = models.PositiveSmallIntegerField(choices=[(i, i) for i in range(1, 6)])  
     comment = models.TextField(blank=True, null=True) 

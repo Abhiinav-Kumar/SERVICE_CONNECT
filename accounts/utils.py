@@ -15,9 +15,13 @@ def otp_generator(email):
     formatted_expiry_time = expiry_time.strftime("%Y-%m-%d %I:%M %p IST")
     return otp, formatted_expiry_time
 
-def iscustomer(user_id):
-    try:
-        user = UserRegister.objects.get(id=user_id)  
-        return user.role == "customer" 
-    except UserRegister.DoesNotExist:
-        return False  
+
+# def iscustomer(user_id):
+#     try:
+#         user = UserRegister.objects.get(id=user_id)  
+#         return user.role == "customer" 
+#     except UserRegister.DoesNotExist:
+#         return False  
+
+ # if not iscustomer(request.user.id):  
+        #     return Response({"message": "Access denied"}, status=status.HTTP_403_FORBIDDEN)

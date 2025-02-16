@@ -17,11 +17,11 @@ class MyPagination(PageNumberPagination):
     
 
 class AllServiceAV(APIView):
+    permission_classes = [IsAuthenticated,IsCustomer]
     
     def get(self, request):
         
         query = request.GET.get('search', None)
-        
         services = Service.objects.all()
         
         if query:
@@ -29,12 +29,16 @@ class AllServiceAV(APIView):
                 Q(title__icontains=query) | 
                 Q(subservices__title__icontains=query) 
             ).distinct()
+            
         if not services.exists():
             return Response({"message": f"Sorry, no results found for '{query}'. Please try a different search term."}, status=status.HTTP_404_NOT_FOUND)
         
-        serializer = ServiceSerializer(services, many=True)
+        paginator = MyPagination()
+        paginated_data = paginator.paginate_queryset(services,request)
         
-        return Response({"services": serializer.data})
+        serializer = ServiceSerializer(paginated_data, many=True)
+        
+        return paginator.get_paginated_response(serializer.data)
 
 
 class ServiceBookingAV(APIView):

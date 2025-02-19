@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from service_manager.api.serializers import ServiceRequestSerializer,ServiceSerializer,SubserviceSerializer
+from service_manager.api.serializers import ServiceRequestSerializer,ServiceSerializer,SubserviceSerializer,ReviewRatingSerializers
 from service_manager.models import ServiceRequest
 from rest_framework.permissions import IsAuthenticated
 from service_manager.permissions import IsCustomer
@@ -88,4 +88,14 @@ class ServiceBookingAV(APIView):
         booking.delete()
         return Response({"message": "Booking Successfully Deleted"}, status=status.HTTP_204_NO_CONTENT)
     
+
+class ReviewRatingAV(APIView):
     
+    def post(self,request):
+        
+        serializer = ReviewRatingSerializers(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message":"Success" ,"data":serializer.data,},status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)

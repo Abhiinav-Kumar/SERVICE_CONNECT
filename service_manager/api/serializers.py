@@ -10,6 +10,17 @@ class ServiceRequestSerializer(serializers.ModelSerializer):
         model = ServiceRequest
         fields = "__all__"
         
+        
+class ReviewRatingSerializers(serializers.ModelSerializer):
+    user = serializers.CharField(source="user.name")
+    service = serializers.CharField(source="service.title")
+    service_provider = serializers.CharField(source="service_provider.name")
+    
+    class Meta:
+        model = Review
+        fields = ['user','service','service_provider','rating','comment']
+        
+        
 
 
 # Search serializer
@@ -32,7 +43,7 @@ class SubserviceSerializer(serializers.ModelSerializer):
         
     def get_rating(self, obj):
         avg_rating = obj.review_set.aggregate(Avg('rating'))['rating__avg']  
-        return round(avg_rating, 1) if avg_rating is not None else 0
+        return round(avg_rating, 1) if avg_rating is not None else "Be the first to give a rating"
     
     
 class ServiceSerializer(serializers.ModelSerializer):
